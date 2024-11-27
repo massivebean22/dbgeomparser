@@ -197,7 +197,7 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for item in enumerate(geom_list):
+        for item in geom_list:
             sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
@@ -238,7 +238,7 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for item in enumerate(geom_list):
+        for item in geom_list:
             sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
@@ -279,7 +279,7 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for item in enumerate(geom_list):
+        for item in geom_list:
             sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
@@ -320,7 +320,7 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for item in enumerate(geom_list):
+        for item in geom_list:
             sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
