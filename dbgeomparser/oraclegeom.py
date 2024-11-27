@@ -20,8 +20,15 @@ class OracleGeomParser:
         self.ordinate_type_obj = connection.gettype("MDSYS.SDO_ORDINATE_ARRAY")
         self.point_type_obj = connection.gettype("MDSYS.SDO_POINT_TYPE")
 
+    ### User Intended Function Call
+    def parse_geometry(self, geom:shp.Geometry, crs:int = None):
+        """
+        Converts a shapely geometry object into an ORACLE SDO_GEOMETRY object.
+        """
+        return shp_conversion(geom, crs)
+
     ### Main Parsing Function
-    def parse_geometry(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def shp_conversion(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
         Converts a shapely geometry object into an ORACLE SDO_GEOMETRY object.
         Primarily for use with insertion into a database following a python / 
@@ -182,8 +189,8 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for index, item in enumerate(geom_list):
-            sdo_geom_data.append(self.parse_geometry(item, crs, True))
+        for item in enumerate(geom_list):
+            sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -223,8 +230,8 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for index, item in enumerate(geom_list):
-            sdo_geom_data.append(self.parse_geometry(item, crs, True))
+        for item in enumerate(geom_list):
+            sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -264,8 +271,8 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for index, item in enumerate(geom_list):
-            sdo_geom_data.append(self.parse_geometry(item, crs, True))
+        for item in enumerate(geom_list):
+            sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -305,8 +312,8 @@ class OracleGeomParser:
         geom_list = geom.geoms
         sdo_geom_data = []
 
-        for index, item in enumerate(geom_list):
-            sdo_geom_data.append(self.parse_geometry(item, crs, True))
+        for item in enumerate(geom_list):
+            sdo_geom_data.append(self.shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
