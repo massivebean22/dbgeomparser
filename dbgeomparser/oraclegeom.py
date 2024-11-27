@@ -23,9 +23,17 @@ class OracleGeomParser:
     ### User Intended Function Call
     def parse_geometry(self, geom:shp.Geometry, crs:int = None):
         """
-        Converts a shapely geometry object into an ORACLE SDO_GEOMETRY object.
+        Converts a shapely object into an ORACLE SDO_GEOMETRY, intended for use in
+        database insertion pipeline following a geopandas/shapely analysis process
+        
+        Arguments:
+        |-> geom: a shapely geometry object
+        |-> crs: the EPSG code / coordinate reference system of the input geometry (optional)
+
+        Returns:
+        |-> MDSYS.SDO_GEOMETRY object
         """
-        return shp_conversion(geom, crs)
+        return self.shp_conversion(geom, crs)
 
     ### Main Parsing Function
     def shp_conversion(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
