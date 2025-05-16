@@ -6,7 +6,7 @@ Coordinate Reference Systems are supported and if passed as an argument, the res
 
 # Requirements
 
-- [Oracle Client](https://www.oracle.com/au/database/technologies/oracle19c-windows-downloads.html) - tested on Version 19c
+- [Oracle Client](https://www.oracle.com/au/database/technologies/oracle19c-windows-downloads.html) - tested on client version 19c
 - [oracledb](https://python-oracledb.readthedocs.io/en/v2.1.1/) - tested on version 2.1.1
 - [shapely](https://shapely.readthedocs.io/en/2.0.4/index.html) - tested on version 2.0.4
 - [numpy](https://numpy.org/doc/1.26/) - tested on version 1.26.4
