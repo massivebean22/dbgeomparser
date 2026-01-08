@@ -12,10 +12,7 @@ class OracleGeomParser:
         Oracle data types for geometry parsing. 
 
         Parameters:
-        |-> connection (oracledb.Connection) - an oracle database connection
-
-        Returns:
-        |-> None
+        |-> connection (oracledb.Connection) - an oracle database connection.
         """
         ### Retrieves relevant SDO data types to assist with Oracle Geometry Creation
         self.geom_type_obj = connection.gettype("MDSYS.SDO_GEOMETRY")
@@ -27,14 +24,14 @@ class OracleGeomParser:
     def parse_geometry(self, geom:shp.Geometry, crs:int = None):
         """
         Converts a shapely object into an ORACLE SDO_GEOMETRY, intended for use in
-        database insertion pipeline following a geopandas/shapely analysis process
+        database insertion pipeline following a geopandas/shapely analysis process.
         
         Parameters:
-        |-> geom (shp.geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
 
         Returns:
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> MDSYS.SDO_GEOMETRY object.
         """
         return self.shp_conversion(geom, crs)
 
@@ -49,18 +46,18 @@ class OracleGeomParser:
         The input into ORACLE will be in 2D.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
+        |-> {'elem_info':[], 'ordinates':[]} (dict) - if base_data is True, then the element info
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
 
         geom_type = geom.geom_type
@@ -88,21 +85,21 @@ class OracleGeomParser:
 
     def create_point(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
-        Converts a shapely Point into an ORACLE Point
+        Converts a shapely Point into an ORACLE Point.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
 
@@ -123,21 +120,21 @@ class OracleGeomParser:
 
     def create_line(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """ 
-        Converts a shapely LineString or LinearRing to an ORACLE Line 
+        Converts a shapely LineString or LinearRing to an ORACLE Line.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
 
@@ -164,22 +161,22 @@ class OracleGeomParser:
 
     def create_polygon(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
-        Converts a Shapely Polygon into an ORACLE Polygon
-        Can handle simple and complex polygons (polygons with holes)
+        Converts a Shapely Polygon into an ORACLE Polygon.
+        Can handle simple and complex polygons (polygons with holes).
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
 
@@ -239,21 +236,21 @@ class OracleGeomParser:
 
     def create_geometry_collection(self, geom:shp.Geometry, crs:str, base_data:bool = False):
         """
-        Converts a shapely GeometryCollection to an ORACLE Collection
+        Converts a shapely GeometryCollection to an ORACLE Collection.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
+        |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
@@ -294,21 +291,21 @@ class OracleGeomParser:
 
     def create_multipoint(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
-        Converts a Shapely MultiPoint to a ORACLE MultiPoint
+        Converts a Shapely MultiPoint to a ORACLE MultiPoint.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
@@ -349,21 +346,21 @@ class OracleGeomParser:
 
     def create_multiline(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
-        Converts a Shapely MultiLineString to a ORACLE MultiLine
+        Converts a Shapely MultiLineString to a ORACLE MultiLine.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
+        |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
@@ -404,21 +401,21 @@ class OracleGeomParser:
 
     def create_multipolygon(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
         """
-        Converts a Shapely MultiPolygon to a ORACLE MultiPolygon
+        Converts a Shapely MultiPolygon to a ORACLE MultiPolygon.
 
         Parameters:
-        |-> geom (shp.Geometry) - a shapely geometry object
-        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
+        |-> geom (shp.Geometry) - a shapely geometry object.
+        |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
             rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
-            called
+            called.
 
         Returns:
-        |-> None if shapely geometry type is not supported
-        |-> MDSYS.SDO_GEOMETRY object
+        |-> None if shapely geometry type is not supported.
+        |-> MDSYS.SDO_GEOMETRY object.
         |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
-        (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array)
+            (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
