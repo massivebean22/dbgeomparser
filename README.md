@@ -30,8 +30,8 @@ from dbgeomparser import OracleGeomParser
 
 ### Oracle Connection ###
 connection = oracledb.connect(
-	user = 'Your Username', 
-	password = 'Your Password', 
+    user = 'Your Username', 
+    password = 'Your Password', 
     host = 'Your Host', 
     port = 1521, 
     dsn = 'Your dsn'
