@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 # Distribution Metadata
 setup(
     name = "dbgeomparser",
-    version = "0.1.7",
+    version = "0.1.8",
     author = 'Nino Shaw',
     description = "A package to handle conversion of shapely geometries to Oracle database compatible geometry objects",
     install_requires = [
