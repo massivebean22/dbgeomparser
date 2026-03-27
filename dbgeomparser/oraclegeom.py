@@ -62,7 +62,7 @@ class OracleGeomParser:
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
 
         Raises:
-        |-> UnsupportedGeometryException (Exception) - when geometry type is not supported
+        |-> UnsupportedGeometryException (Exception) - when geometry type is not supported.
         """
         geom_type = geom.geom_type
         
