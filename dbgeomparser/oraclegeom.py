@@ -6,7 +6,7 @@ from .custom_exceptions import UnsupportedGeometryException
 class OracleGeomParser:
     """ Object that handles conversion of shapely Geometry to relevant ORACLE SDO_GEOMETRY OBJECT """
 
-    def __init__(self, connection:oracledb.Connection):
+    def __init__(self, connection:oracledb.Connection) -> None:
         """
         Constructor that connects to an Oracle Database and retrieves the relevant
         Oracle data types for geometry parsing. 
@@ -19,9 +19,10 @@ class OracleGeomParser:
         self.element_info_type_obj = connection.gettype("MDSYS.SDO_ELEM_INFO_ARRAY")
         self.ordinate_type_obj = connection.gettype("MDSYS.SDO_ORDINATE_ARRAY")
         self.point_type_obj = connection.gettype("MDSYS.SDO_POINT_TYPE")
+        return
 
     ### User Intended Function Call
-    def parse_geometry(self, geom:shp.Geometry, crs:int = None):
+    def parse_geometry(self, geom:shp.Geometry, crs:int = None) -> object:
         """
         Converts a shapely object into an ORACLE SDO_GEOMETRY, intended for use in
         database insertion pipeline following a geopandas/shapely analysis process.
@@ -33,10 +34,12 @@ class OracleGeomParser:
         Returns:
         |-> MDSYS.SDO_GEOMETRY object.
         """
-        return self.shp_conversion(geom, crs)
+        return self._shp_conversion(geom, crs)
 
     ### Main Parsing Function
-    def shp_conversion(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _shp_conversion(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a shapely geometry object into an ORACLE SDO_GEOMETRY object.
         Primarily for use with insertion into a database following a python / 
@@ -54,36 +57,41 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
-        """
 
+        Raises:
+        |-> UnsupportedGeometryException (Exception) - when geometry type is not supported
+        """
         geom_type = geom.geom_type
         
         match geom_type:
             case 'Point':
-                return self.create_point(geom, crs, base_data)
+                return self._create_point(geom, crs, base_data)
             case 'LineString':
-                return self.create_line(geom, crs, base_data)
+                return self._create_line(geom, crs, base_data)
             case 'LinearRing':
-                return self.create_line(geom, crs, base_data)
+                return self._create_line(geom, crs, base_data)
             case 'Polygon':
-                return self.create_polygon(geom, crs, base_data)
+                return self._create_polygon(geom, crs, base_data)
             case 'GeometryCollection':
-                return self.create_geometry_collection(geom, crs, base_data)
+                return self._create_geometry_collection(geom, crs, base_data)
             case 'MultiPoint':
-                return self.create_multipoint(geom, crs, base_data)
+                return self._create_multipoint(geom, crs, base_data)
             case 'MultiLineString':
-                return self.create_multiline(geom, crs, base_data)
+                return self._create_multiline(geom, crs, base_data)
             case 'MultiPolygon':
-                return self.create_multipolygon(geom, crs, base_data)
+                return self._create_multipolygon(geom, crs, base_data)
             case _:
                 print(f'Geometry Type < {geom_type} > is not currently supported! Parse Failed!')
                 raise UnsupportedGeometryException
+        
+        return
 
-    def create_point(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_point(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a shapely Point into an ORACLE Point.
 
@@ -96,9 +104,8 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
@@ -118,7 +125,9 @@ class OracleGeomParser:
         
         return geometry
 
-    def create_line(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_line(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """ 
         Converts a shapely LineString or LinearRing to an ORACLE Line.
 
@@ -131,9 +140,8 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
@@ -159,7 +167,9 @@ class OracleGeomParser:
 
         return geometry
 
-    def create_polygon(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_polygon(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a Shapely Polygon into an ORACLE Polygon.
         Can handle simple and complex polygons (polygons with holes).
@@ -173,9 +183,8 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geometry = self.geom_type_obj.newobject()
@@ -234,7 +243,9 @@ class OracleGeomParser:
         
         return geometry
 
-    def create_geometry_collection(self, geom:shp.Geometry, crs:str, base_data:bool = False):
+    def _create_geometry_collection(
+            self, geom:shp.Geometry, crs:str, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a shapely GeometryCollection to an ORACLE Collection.
 
@@ -247,16 +258,15 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
 
         for item in geom_list:
-            sdo_geom_data.append(self.shp_conversion(item, crs, True))
+            sdo_geom_data.append(self._shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -289,7 +299,9 @@ class OracleGeomParser:
 
         return geometry
 
-    def create_multipoint(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_multipoint(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a Shapely MultiPoint to a ORACLE MultiPoint.
 
@@ -302,16 +314,15 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
 
         for item in geom_list:
-            sdo_geom_data.append(self.shp_conversion(item, crs, True))
+            sdo_geom_data.append(self._shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -344,7 +355,9 @@ class OracleGeomParser:
         
         return geometry
 
-    def create_multiline(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_multiline(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a Shapely MultiLineString to a ORACLE MultiLine.
 
@@ -357,16 +370,15 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
 
         for item in geom_list:
-            sdo_geom_data.append(self.shp_conversion(item, crs, True))
+            sdo_geom_data.append(self._shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
@@ -399,7 +411,9 @@ class OracleGeomParser:
         
         return geometry
 
-    def create_multipolygon(self, geom:shp.Geometry, crs:int = None, base_data:bool = False):
+    def _create_multipolygon(
+            self, geom:shp.Geometry, crs:int = None, base_data:bool = False
+        ) -> object|dict[str:list[float]]:
         """
         Converts a Shapely MultiPolygon to a ORACLE MultiPolygon.
 
@@ -412,16 +426,15 @@ class OracleGeomParser:
             called.
 
         Returns:
-        |-> None if shapely geometry type is not supported.
         |-> MDSYS.SDO_GEOMETRY object.
-        |-> {'elem_info':[], 'ordinates':[]} (dict()) - if base_data is True, then the element info
+        |-> {'elem_info':[], 'ordinates':[]} (dict[str:list[float]]) - if base_data is True, then the element info
             (oracle data to indicate geometry type) and ordinates (coordinate values in a 1 dimensional array).
         """
         geom_list = geom.geoms
         sdo_geom_data = []
 
         for item in geom_list:
-            sdo_geom_data.append(self.shp_conversion(item, crs, True))
+            sdo_geom_data.append(self._shp_conversion(item, crs, True))
 
         geometry = self.geom_type_obj.newobject()
 
