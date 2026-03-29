@@ -52,6 +52,6 @@ sdo_geom = parser.parse_geometry(test_geometry)
 
 ### Example Insert Statement ###
 sql = "INSERT INTO SCHEMA_NAME.TABLE_NAME (GEOMETRY_COLUMN) VALUES (:1)"
-cursor.execute(sql, [parser.parse_geometry(geom)])
+cursor.execute(sql, [parser.parse_geometry(sdo_geom)])
 connection.commit()
 ```
