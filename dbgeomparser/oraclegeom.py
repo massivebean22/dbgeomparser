@@ -22,7 +22,7 @@ class OracleGeomParser:
         return
 
     ### User Intended Function Call
-    def parse_geometry(self, geom:shp.Geometry, crs:int = None) -> object:
+    def parse_geometry(self, geom:shp.Geometry, crs:int = None) -> oracledb.DbObject:
         """
         Converts a shapely object into an ORACLE SDO_GEOMETRY, intended for use in
         database insertion pipeline following a geopandas/shapely analysis process.
@@ -39,7 +39,7 @@ class OracleGeomParser:
     ### Main Parsing Function
     def _shp_conversion(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a shapely geometry object into an ORACLE SDO_GEOMETRY object.
         Primarily for use with insertion into a database following a python / 
@@ -52,7 +52,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -91,7 +91,7 @@ class OracleGeomParser:
 
     def _create_point(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a shapely Point into an ORACLE Point.
 
@@ -110,7 +110,7 @@ class OracleGeomParser:
         """
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         geometry.SDO_GTYPE = 2001
@@ -127,7 +127,7 @@ class OracleGeomParser:
 
     def _create_line(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """ 
         Converts a shapely LineString or LinearRing to an ORACLE Line.
 
@@ -135,7 +135,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -146,7 +146,7 @@ class OracleGeomParser:
         """
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         ordinates = []
@@ -169,7 +169,7 @@ class OracleGeomParser:
 
     def _create_polygon(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a Shapely Polygon into an ORACLE Polygon.
         Can handle simple and complex polygons (polygons with holes).
@@ -178,7 +178,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -189,7 +189,7 @@ class OracleGeomParser:
         """
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         ordinates = []
@@ -245,7 +245,7 @@ class OracleGeomParser:
 
     def _create_geometry_collection(
             self, geom:shp.Geometry, crs:str, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a shapely GeometryCollection to an ORACLE Collection.
 
@@ -253,7 +253,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -270,7 +270,7 @@ class OracleGeomParser:
 
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         elem_info = []
@@ -301,7 +301,7 @@ class OracleGeomParser:
 
     def _create_multipoint(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a Shapely MultiPoint to a ORACLE MultiPoint.
 
@@ -309,7 +309,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -326,7 +326,7 @@ class OracleGeomParser:
 
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         elem_info = []
@@ -357,7 +357,7 @@ class OracleGeomParser:
 
     def _create_multiline(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a Shapely MultiLineString to a ORACLE MultiLine.
 
@@ -365,7 +365,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional)
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -382,7 +382,7 @@ class OracleGeomParser:
 
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         elem_info = []
@@ -413,7 +413,7 @@ class OracleGeomParser:
 
     def _create_multipolygon(
             self, geom:shp.Geometry, crs:int = None, base_data:bool = False
-        ) -> object|dict[str:list[float]]:
+        ) -> oracledb.DbObject | dict[str:list[float]]:
         """
         Converts a Shapely MultiPolygon to a ORACLE MultiPolygon.
 
@@ -421,7 +421,7 @@ class OracleGeomParser:
         |-> geom (shp.Geometry) - a shapely geometry object.
         |-> crs (int) - the EPSG code / coordinate reference system of the input geometry (optional).
         |-> base_data (bool) - optional boolean to return the SDO_ELEM_INFO array and the Ordinates
-            rather than returning a MDSYS.SDO_GEOMETRY Object - DOES NOT RETURN SDO_ELEM_INFO or 
+            rather than returning a MDSYS.SDO_GEOMETRY object - DOES NOT RETURN SDO_ELEM_INFO or 
             Ordinates when using this specific function but will return it if the sub functions are 
             called.
 
@@ -438,7 +438,7 @@ class OracleGeomParser:
 
         geometry = self.geom_type_obj.newobject()
 
-        if crs != None:
+        if crs is not None:
             geometry.SDO_SRID = crs
 
         elem_info = []
